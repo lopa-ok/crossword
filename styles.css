@@ -1,0 +1,114 @@
+@import url('https://fonts.googleapis.com/css2?family=Slackey&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gaegu&display=swap');
+
+body {
+    font-family: 'Gaegu', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #fbefd6;
+}
+
+h2 {
+    text-align: center;
+    font-family: 'Slackey', cursive;
+    font-size: 2.5rem;
+    color: #ef3553;
+    margin-bottom: 30px;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 20px auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+td {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
+    border: 2px solid #fb8b3c;
+    position: relative;
+    transition: background-color 0.3s ease;
+}
+
+.black {
+    background-color: #333;
+    border: none;
+}
+
+input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 18px;
+    border: none;
+    outline: none;
+    font-family: 'Slackey', cursive;
+    color: #00afb3;
+    background-color: transparent;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+input.correct {
+    color: green;
+    background-color: #d4edda;
+    border-radius: 5px;
+    animation: pulse-correct 0.3s ease-in-out;
+}
+
+input.incorrect {
+    color: red;
+    background-color: #f8d7da;
+    border-radius: 5px;
+    animation: pulse-incorrect 0.3s ease-in-out;
+}
+
+@keyframes pulse-correct {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes pulse-incorrect {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(0.9); }
+}
+
+.clues {
+    margin: 20px auto;
+    width: 80%;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.clue {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.hint-button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    background-color: #00afb3;
+    color: #fbefd6;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.hint-button:hover {
+    background-color: #fb8b3c;
+    transform: scale(1.05);
+}
+
+.hint-button:active {
+    transform: scale(0.95);
+}
