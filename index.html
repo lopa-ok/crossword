@@ -44,74 +44,98 @@
 <h2 style="text-align:center;">Crossword Puzzle</h2>
 
 <table id="crossword">
-    <tr>
-        <td><input type="text" maxlength="1" id="0-0"></td>
-        <td><input type="text" maxlength="1" id="0-1"></td>
-        <td><input type="text" maxlength="1" id="0-2"></td>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="0-4"></td>
-    </tr>
-    <tr>
-        <td><input type="text" maxlength="1" id="1-0"></td>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="1-2"></td>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="1-4"></td>
-    </tr>
-    <tr>
-        <td><input type="text" maxlength="1" id="2-0"></td>
-        <td><input type="text" maxlength="1" id="2-1"></td>
-        <td><input type="text" maxlength="1" id="2-2"></td>
-        <td><input type="text" maxlength="1" id="2-3"></td>
-        <td><input type="text" maxlength="1" id="2-4"></td>
-    </tr>
-    <tr>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="3-1"></td>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="3-3"></td>
-        <td><input type="text" maxlength="1" id="3-4"></td>
-    </tr>
-    <tr>
-        <td><input type="text" maxlength="1" id="4-0"></td>
-        <td><input type="text" maxlength="1" id="4-1"></td>
-        <td class="black"></td>
-        <td><input type="text" maxlength="1" id="4-3"></td>
-        <td><input type="text" maxlength="1" id="4-4"></td>
-    </tr>
+    
 </table>
 
 <div class="clues">
-    <div class="clue"><strong>Across:</strong></div>
-    <div class="clue">1. A place where you live (5 letters)</div>
-    <div class="clue">3. Opposite of yes (2 letters)</div>
-    <div class="clue">4. A big, strong wild animal (5 letters)</div>
-
-    <div class="clue"><strong>Down:</strong></div>
-    <div class="clue">1. A color that resembles the sky (4 letters)</div>
-    <div class="clue">2. The opposite of young (3 letters)</div>
-    <div class="clue">3. A small, round fruit (5 letters)</div>
+    <div class="clue"><strong>Clues:</strong></div>
+    <div id="clues"></div>
 </div>
 
 <script>
-    const solution = {
-        "0-0": "H", "0-1": "O", "0-2": "M", "0-4": "N",
-        "1-0": "O", "1-2": "L", "1-4": "O",
-        "2-0": "M", "2-1": "A", "2-2": "L", "2-3": "E", "2-4": "S",
-        "3-1": "B", "3-3": "E", "3-4": "A",
-        "4-0": "N", "4-1": "O", "4-3": "R", "4-4": "O"
+    const apiKey = 'YOUR_WORDSAPI_KEY';
+    const apiBaseUrl = 'https://wordsapiv1.p.rapidapi.com/words/';
+    const headers = {
+        "X-RapidAPI-Key": apiKey,
+        "X-RapidAPI-Host": "wordsapiv1.p.rapidapi.com"
     };
 
-    document.querySelectorAll('input').forEach(input => {
-        input.addEventListener('input', () => {
-            const id = input.id;
-            if (input.value.toUpperCase() === solution[id]) {
-                input.style.color = 'green';
-            } else {
-                input.style.color = 'red';
+    async function fetchWord() {
+        const response = await fetch(`${apiBaseUrl}?random=true`, { headers });
+        return await response.json();
+    }
+
+    async function fetchDefinition(word) {
+        const response = await fetch(`${apiBaseUrl}${word}/definitions`, { headers });
+        return await response.json();
+    }
+
+    async function generateCrossword() {
+        const words = [];
+        const clues = [];
+
+        for (let i = 0; i < 5; i++) {
+            const wordData = await fetchWord();
+            const word = wordData.word;
+            const definitionData = await fetchDefinition(word);
+            const definition = definitionData.definitions[0].definition;
+
+            words.push(word.toUpperCase());
+            clues.push({ word, definition });
+        }
+
+        createGrid(words);
+        displayClues(clues);
+    }
+
+    function createGrid(words) {
+        const crosswordTable = document.getElementById('crossword');
+        crosswordTable.innerHTML = '';
+
+        const gridSize = Math.max(...words.map(w => w.length));
+        const grid = Array(gridSize).fill(null).map(() => Array(gridSize).fill(''));
+
+        
+        words.forEach((word, index) => {
+            for (let i = 0; i < word.length; i++) {
+                grid[index][i] = word[i];
             }
         });
-    });
+
+        
+        grid.forEach(row => {
+            const tr = document.createElement('tr');
+            row.forEach(cell => {
+                const td = document.createElement('td');
+                if (cell !== '') {
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.maxLength = 1;
+                    input.dataset.letter = cell;
+                    td.appendChild(input);
+                } else {
+                    td.classList.add('black');
+                }
+                tr.appendChild(td);
+            });
+            crosswordTable.appendChild(tr);
+        });
+    }
+
+    function displayClues(clues) {
+        const cluesDiv = document.getElementById('clues');
+        cluesDiv.innerHTML = '';
+
+        clues.forEach((clue, index) => {
+            const div = document.createElement('div');
+            div.classList.add('clue');
+            div.textContent = `${index + 1}. ${clue.definition} (${clue.word.length} letters)`;
+            cluesDiv.appendChild(div);
+        });
+    }
+
+    
+    generateCrossword();
 </script>
 
 </body>
